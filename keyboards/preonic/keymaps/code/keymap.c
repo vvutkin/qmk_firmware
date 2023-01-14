@@ -15,12 +15,13 @@
  */
 
 #include QMK_KEYBOARD_H
+#include "mousekey.h"
 #include "muse.h"
 #include "color.h"
 
-enum preonic_layers { _QWERTY, _DVORAK, _LOWER, _RAISE, _ADJUST };
+enum preonic_layers { _QWERTY, _DVORAK, _LOWER, _RAISE, _MOUSE, _ADJUST };
 
-enum preonic_keycodes { QWERTY = SAFE_RANGE, DVORAK, LOWER, RAISE, BACKLIT };
+enum preonic_keycodes { QWERTY = SAFE_RANGE, DVORAK, LOWER, RAISE, MOUSE, BACKLIT, M_MS_UL, M_MS_UR, M_MS_DL, M_MS_DR};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -108,15 +109,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END
         ),
 
+    /* Mouse
+     * ,-----------------------------------------------------------------------------------.
+     * |      |      |      |      |      |      |      |      |      |      |      |      |
+     * |------+------+------+------+------+------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |      | MS UL| MS U | MS UR|MS WHL|MS WHR|
+     * |------+------+------+------+------+-------------+------+------+------+------+------|
+     * |      |MS BT5|MS BT4|MS BT3|MS BT2|      |      | MS L |      | MS R |      |MS WHU|
+     * |------+------+------+------+------+------|------+------+------+------+------+------|
+     * |      |      |      |      |      |      |      | MS DL| MS D | MS DR| MS U |MS WHD|
+     * |------+------+------+------+------+------+------+------+------+------+------+------|
+     * |      |      |      |      |      |   MS BT 1   |      |      | MS L | MS D | MS R |
+     * `-----------------------------------------------------------------------------------'
+     */
+    [_MOUSE] = LAYOUT_preonic_grid(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, M_MS_UL, KC_MS_U, M_MS_UR, KC_WH_L, KC_WH_R,
+        _______, KC_BTN5, KC_BTN4, KC_BTN3, KC_BTN2, XXXXXXX, XXXXXXX, KC_MS_L, XXXXXXX, KC_MS_R, XXXXXXX, KC_WH_U,
+        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, M_MS_DL, KC_MS_D, M_MS_DR, KC_MS_U, KC_WH_D,
+        _______, _______, _______, _______, _______, KC_BTN1, KC_BTN1, _______, _______, KC_MS_L, KC_MS_D, KC_MS_R
+        ),
+
     /* Adjust (Lower + Raise)
      * ,-----------------------------------------------------------------------------------.
      * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
      * |------+------+------+------+------+------+------+------+------+------+------+------|
      * |      | Reset| Debug|      |      |      |      |      |      |      |      |  Del |
      * |------+------+------+------+------+-------------+------+------+------+------+------|
-     * |      |      |Aud cy|Aud on|AudOff|AGnorm|AGswap|Dvorak|Qwerty|      |      |      |
+     * |      |      |Aud cy|Aud on|AudOff|      |      |Dvorak|Qwerty|      |      |      |
      * |------+------+------+------+------+------|------+------+------+------+------+------|
-     * |      |Voice-|Voice+|Mus on|MusOff|MidiOn|MidOff|      | Prev | Br - | Br + | Next |
+     * |      |Voice-|Voice+|Mus on|MusOff|MidiOn|MidOff|Mouse | Prev | Br - | Br + | Next |
      * |------+------+------+------+------+------+------+------+------+------+------+------|
      * | Brite|RGBtgl|      |      |      |  Caps Lock  |      | Mute | Vol- | Vol+ | Play |
      * `-----------------------------------------------------------------------------------'
@@ -124,8 +146,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ADJUST] = LAYOUT_preonic_grid(
         KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
         _______, QK_BOOT, DEBUG  , _______, _______, _______, _______, _______, _______, _______, _______, KC_DEL ,
-        _______, _______, MU_MOD , AU_ON  , AU_OFF , AG_NORM, AG_SWAP, DVORAK , QWERTY , _______, _______, _______,
-        _______, MUV_DE , MUV_IN , MU_ON  , MU_OFF , MI_ON  , MI_OFF , _______, KC_MPRV, KC_BRID, KC_BRIU, KC_MNXT,
+        _______, _______, MU_MOD , AU_ON  , AU_OFF , _______, _______, DVORAK , QWERTY , _______, _______, _______,
+        _______, MUV_DE , MUV_IN , MU_ON  , MU_OFF , MI_ON  , MI_OFF , MOUSE  , KC_MPRV, KC_BRID, KC_BRIU, KC_MNXT,
         BACKLIT, RGB_TOG, _______, _______, _______, KC_CAPS, KC_CAPS, _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY
         )};
 
@@ -163,6 +185,55 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             break;
+        case MOUSE:
+            if (record->event.pressed) {
+                set_single_persistent_default_layer(_MOUSE);
+            }
+            return false;
+            break;
+#ifdef MOUSEKEY_ENABLE
+
+        case M_MS_UL:
+            if (record->event.pressed) {
+              mousekey_on(KC_MS_UP);
+              mousekey_on(KC_MS_LEFT);
+            } else {
+              mousekey_off(KC_MS_UP);
+              mousekey_off(KC_MS_LEFT);
+            }
+            break;
+
+        case M_MS_UR:
+            if (record->event.pressed) {
+              mousekey_on(KC_MS_UP);
+              mousekey_on(KC_MS_RIGHT);
+            } else {
+              mousekey_off(KC_MS_UP);
+              mousekey_off(KC_MS_RIGHT);
+            }
+            break;
+
+        case M_MS_DL:
+            if (record->event.pressed) {
+              mousekey_on(KC_MS_DOWN);
+              mousekey_on(KC_MS_LEFT);
+            } else {
+              mousekey_off(KC_MS_DOWN);
+              mousekey_off(KC_MS_LEFT);
+            }
+            break;
+
+        case M_MS_DR:
+            if (record->event.pressed) {
+              mousekey_on(KC_MS_DOWN);
+              mousekey_on(KC_MS_RIGHT);
+            } else {
+              mousekey_off(KC_MS_DOWN);
+              mousekey_off(KC_MS_RIGHT);
+            }
+            break;
+#endif /* MOUSEKEY_ENABLE */
+
         case BACKLIT:
             if (record->event.pressed) {
                 register_code(KC_RSFT);
