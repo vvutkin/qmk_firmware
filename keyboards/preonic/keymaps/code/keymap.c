@@ -124,10 +124,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [_MOUSE] = LAYOUT_preonic_grid(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, M_MS_UL, KC_MS_U, M_MS_UR, KC_WH_L, KC_WH_R,
-        _______, KC_BTN5, KC_BTN4, KC_BTN3, KC_BTN2, XXXXXXX, XXXXXXX, KC_MS_L, XXXXXXX, KC_MS_R, XXXXXXX, KC_WH_U,
-        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, M_MS_DL, KC_MS_D, M_MS_DR, XXXXXXX, KC_WH_D,
-        _______, _______, _______, _______, _______, KC_BTN1, KC_BTN1, _______, _______, _______, _______, _______
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, M_MS_UL, MS_UP  , M_MS_UR, MS_WHLL, MS_WHLR,
+        _______, MS_BTN5, MS_BTN4, MS_BTN3, MS_BTN2, XXXXXXX, XXXXXXX, MS_LEFT, XXXXXXX, MS_RGHT, XXXXXXX, MS_WHLU,
+        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, M_MS_DL, MS_DOWN, M_MS_DR, XXXXXXX, MS_WHLD,
+        _______, _______, _______, _______, _______, MS_BTN1, MS_BTN1, _______, _______, _______, _______, _______
         ),
 
     /* Adjust (Lower + Raise)
@@ -148,7 +148,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, QK_BOOT, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_DEL ,
         _______, _______, _______, AU_ON  , AU_OFF , _______, _______, DVORAK , QWERTY , LANG_SW, _______, _______,
         _______, _______, _______, MU_ON  , MU_OFF , MI_ON  , MI_OFF , MOUSE  , KC_MPRV, KC_BRID, KC_BRIU, KC_MNXT,
-        BACKLIT, RGB_TOG, _______, _______, _______, KC_CAPS, KC_CAPS, _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY
+        BACKLIT, UG_TOGG, _______, _______, _______, KC_CAPS, KC_CAPS, _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY
         )};
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -209,41 +209,41 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case M_MS_UL:
             if (record->event.pressed) {
-              mousekey_on(KC_MS_UP);
-              mousekey_on(KC_MS_LEFT);
+              mousekey_on(MS_UP);
+              mousekey_on(MS_LEFT);
             } else {
-              mousekey_off(KC_MS_UP);
-              mousekey_off(KC_MS_LEFT);
+              mousekey_off(MS_UP);
+              mousekey_off(MS_LEFT);
             }
             break;
 
         case M_MS_UR:
             if (record->event.pressed) {
-              mousekey_on(KC_MS_UP);
-              mousekey_on(KC_MS_RIGHT);
+              mousekey_on(MS_UP);
+              mousekey_on(MS_RGHT);
             } else {
-              mousekey_off(KC_MS_UP);
-              mousekey_off(KC_MS_RIGHT);
+              mousekey_off(MS_UP);
+              mousekey_off(MS_RGHT);
             }
             break;
 
         case M_MS_DL:
             if (record->event.pressed) {
-              mousekey_on(KC_MS_DOWN);
-              mousekey_on(KC_MS_LEFT);
+              mousekey_on(MS_DOWN);
+              mousekey_on(MS_LEFT);
             } else {
-              mousekey_off(KC_MS_DOWN);
-              mousekey_off(KC_MS_LEFT);
+              mousekey_off(MS_DOWN);
+              mousekey_off(MS_LEFT);
             }
             break;
 
         case M_MS_DR:
             if (record->event.pressed) {
-              mousekey_on(KC_MS_DOWN);
-              mousekey_on(KC_MS_RIGHT);
+              mousekey_on(MS_DOWN);
+              mousekey_on(MS_RGHT);
             } else {
-              mousekey_off(KC_MS_DOWN);
-              mousekey_off(KC_MS_RIGHT);
+              mousekey_off(MS_DOWN);
+              mousekey_off(MS_RGHT);
             }
             break;
 #endif /* MOUSEKEY_ENABLE */
