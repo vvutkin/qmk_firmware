@@ -21,7 +21,7 @@
 
 enum preonic_layers { _QWERTY, _DVORAK, _LOWER, _RAISE, _MOUSE, _ADJUST };
 
-enum preonic_keycodes { QWERTY = SAFE_RANGE, DVORAK, LOWER, RAISE, MOUSE, BACKLIT, M_MS_UL, M_MS_UR, M_MS_DL, M_MS_DR};
+enum preonic_keycodes { QWERTY = SAFE_RANGE, DVORAK, LOWER, RAISE, MOUSE, BACKLIT, LANG_SW, M_MS_UL, M_MS_UR, M_MS_DL, M_MS_DR};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -146,7 +146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ADJUST] = LAYOUT_preonic_grid(
         KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
         _______, QK_BOOT, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_DEL ,
-        _______, _______, _______, AU_ON  , AU_OFF , _______, _______, DVORAK , QWERTY , _______, _______, _______,
+        _______, _______, _______, AU_ON  , AU_OFF , _______, _______, DVORAK , QWERTY , LANG_SW, _______, _______,
         _______, _______, _______, MU_ON  , MU_OFF , MI_ON  , MI_OFF , MOUSE  , KC_MPRV, KC_BRID, KC_BRIU, KC_MNXT,
         BACKLIT, RGB_TOG, _______, _______, _______, KC_CAPS, KC_CAPS, _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY
         )};
@@ -162,6 +162,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case DVORAK:
             if (record->event.pressed) {
                 set_single_persistent_default_layer(_DVORAK);
+            }
+            return false;
+            break;
+        case LANG_SW:
+            if (record->event.pressed) {
+                register_code(KC_LALT);
+                register_code(KC_RALT);
+                unregister_code(KC_RALT);
+                unregister_code(KC_LALT);
+                if (default_layer_state & (1UL << _DVORAK)) {
+                    set_single_persistent_default_layer(_QWERTY);
+                } else {
+                    set_single_persistent_default_layer(_DVORAK);
+                }
             }
             return false;
             break;
