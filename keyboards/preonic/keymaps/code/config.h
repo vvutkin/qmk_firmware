@@ -16,6 +16,16 @@
 
 #pragma once
 
+// Disable unused RGBLIGHT animations to reduce firmware size.
+// Animations in use: breathing (DVORAK/QWERTY), knight (LOWER), snake (RAISE),
+//                    rainbow_swirl (default startup mode), static_light (ADJUST).
+#undef RGBLIGHT_EFFECT_RAINBOW_MOOD
+#undef RGBLIGHT_EFFECT_CHRISTMAS
+#undef RGBLIGHT_EFFECT_STATIC_GRADIENT
+#undef RGBLIGHT_EFFECT_RGB_TEST
+#undef RGBLIGHT_EFFECT_ALTERNATING
+#undef RGBLIGHT_EFFECT_TWINKLE
+
 // #define RGBLIGHT_LAYERS_OVERRIDE_RGB_OFF
 #define RGBLIGHT_LAYERS_RETAIN_VAL
 #define RGBLIGHT_LIMIT_VAL 100
